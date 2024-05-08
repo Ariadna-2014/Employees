@@ -32,7 +32,7 @@
                 </Column>
             </columns>
             <items>
-                <ColumnListItem id="_IDColumnListItem1">
+                <ColumnListItem id="_IDColumnListItem1" type="Navigation" press="showEmployee">
                     <cells>
                         <Label id="_IDLabelI1" text="{jsonEmployees>EmployeeID}" />
                         <Label id="_IDLabelI2" text="{jsonEmployees>LastName}, {jsonEmployees>FirstName}" />

@@ -13,31 +13,10 @@ sap.ui.define([
     Fragment) {
     "use strict";
 
-    return Controller.extend("logaligroup.employees.controller.MainView", {
+    return Controller.extend("logaligroup.employees.controller.MasterEmployee", {
 
       onInit: function () {
-
-
-        var oView = this.getView();
-        //var i18nBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-
-        var oJSONModelEmpl = new sap.ui.model.json.JSONModel();
-        oJSONModelEmpl.loadData("../localService/mockdata/Employees.json", false);
-        oView.setModel(oJSONModelEmpl, "jsonEmployees");
-
-        var oJSONModelCountries = new sap.ui.model.json.JSONModel();
-        oJSONModelCountries.loadData("../localService/mockdata/Countries.json", false);
-        oView.setModel(oJSONModelCountries, "jsonCountries");
-
-        var oJSONModelConfig = new sap.ui.model.json.JSONModel({
-          visibleID: true,
-          visibleName: true,
-          visibleCountry: true,
-          visibleCity: false,
-          visibleBtnShowCity: true,
-          visibleBtnHideCity: false
-        });
-        oView.setModel(oJSONModelConfig, "jsonConfig");
+        this._bus = sap.ui.getCore().getEventBus();
       },
 
       onFilter: function () {
@@ -117,11 +96,11 @@ sap.ui.define([
           Fragment.load({
             name: "logaligroup.employees.fragment.DialogOrders",
             controller: this
-          }).then(function(oDialog){
-          this._oDialogOrders = oDialog;
-          this.getView().addDependent(oDialog);
-          this._oDialogOrders.bindElement("jsonEmployees>" + oContext.getPath());
-          this._oDialogOrders.open();
+          }).then(function (oDialog) {
+            this._oDialogOrders = oDialog;
+            this.getView().addDependent(oDialog);
+            this._oDialogOrders.bindElement("jsonEmployees>" + oContext.getPath());
+            this._oDialogOrders.open();
           }.bind(this));
         } else {
           //Dialog binding to the Context to have access to the data of selected item
@@ -136,6 +115,11 @@ sap.ui.define([
 
       onCloseOrders: function () {
         this._oDialogOrders.close();
+      },
+
+      showEmployee: function (oEvent) {
+        var path = oEvent.getSource().getBindingContext("jsonEmployees").getPath();
+        this._bus.publish("flexible", "showEmployee", path);
       }
 
     });

@@ -1,19 +1,14 @@
 sap.ui.define([
-  "sap/ui/core/mvc/Controller",
+  "logaligroup/employees/controller/Base.controller",
   "sap/ui/model/Filter",
   "sap/ui/model/FilterOperator",
   "sap/ui/core/Fragment"
 ],
-  /**
-   * @param {typeof sap.ui.core.mvc.Controller} Controller
-   */
-  function (Controller,
-    Filter,
-    FilterOperator,
-    Fragment) {
+ 
+  function (Base, Filter, FilterOperator, Fragment) {
     "use strict";
 
-    return Controller.extend("logaligroup.employees.controller.MasterEmployee", {
+    return Base.extend("logaligroup.employees.controller.MasterEmployee", {
 
       onInit: function () {
         this._bus = sap.ui.getCore().getEventBus();
@@ -47,15 +42,8 @@ sap.ui.define([
         var inputEmployee = this.byId("inputEmployee");
         var valueEmployee = inputEmployee.getValue();
 
-        //if (valueEmployee.length == 6) {
-        //inputEmployee.setDescription("OK");
         this.byId("labelCountry").setVisible(true);
         this.byId("slCountry").setVisible(true);
-        //} else {
-        //   //inputEmployee.setDescription("Not OK");
-        //   this.byId("labelCountry").setVisible(false);
-        //   this.byId("slCountry").setVisible(false);
-        // };
 
       },
 
@@ -87,28 +75,22 @@ sap.ui.define([
         //Get selected Controller
         var iconPressed = oEvent.getSource();
         //Context from the model
-        var oContext = iconPressed.getBindingContext("jsonEmployees");
+        var oContext = iconPressed.getBindingContext("odataNorthwind");
         var oPath = oContext.getPath();
 
         if (!this._oDialogOrders) {
-          //this._oDialogOrders = sap.ui.xmlfragment("logaligroup.employees.fragment.DialogOrders", this);
-          //this.getView().addDependent(this._oDialogOrders);
           Fragment.load({
             name: "logaligroup.employees.fragment.DialogOrders",
             controller: this
           }).then(function (oDialog) {
             this._oDialogOrders = oDialog;
             this.getView().addDependent(oDialog);
-            this._oDialogOrders.bindElement("jsonEmployees>" + oContext.getPath());
+            this._oDialogOrders.bindElement("odataNorthwind>" + oContext.getPath());
             this._oDialogOrders.open();
           }.bind(this));
         } else {
           //Dialog binding to the Context to have access to the data of selected item
-          this._oDialogOrders.bindElement("jsonEmployees>" + oContext.getPath());
-          //this._oDialogOrders.bindElement({
-          //  path: oPath,
-          //  model: "jsonEmployees>"
-          //});
+          this._oDialogOrders.bindElement("odataNorthwind>" + oContext.getPath());
           this._oDialogOrders.open();
         }
       },
@@ -118,7 +100,7 @@ sap.ui.define([
       },
 
       showEmployee: function (oEvent) {
-        var path = oEvent.getSource().getBindingContext("jsonEmployees").getPath();
+        var path = oEvent.getSource().getBindingContext("odataNorthwind").getPath();
         this._bus.publish("flexible", "showEmployee", path);
       }
 
